@@ -1,11 +1,11 @@
 import React from "react";
-import arrayDestruct from "../assets/portfolio/arrayDestruct.jpg";
+import Bookstore from "../assets/portfolio/Bookstore.png";
 
 import installNode from "../assets/portfolio/installNode.jpg";
 
-import navbar from "../assets/portfolio/navbar.jpg";
+import Restaurant from "../assets/portfolio/Restaurant.png";
 
-import reactParallax from "../assets/portfolio/reactParallax.jpg";
+import portfolio from "../assets/portfolio/Portfolio.png";
 
 import reactWeather from "../assets/portfolio/reactWeather.jpg";
 
@@ -15,15 +15,21 @@ const Portfolio = () => {
   const portfolios = [
     {
       id: 1,
-      src: arrayDestruct,
+      src: Bookstore,
+      href: "https://shashankpandya.github.io/Web_Task_1.github.io/",
+      code: "https://github.com/shashankpandya/Web_Task_1.github.io",
     },
     {
       id: 2,
-      src: reactParallax,
+      src: portfolio,
+      href: "https://fantastic-torte-e859f3.netlify.app/",
+      code: "https://github.com/shashankpandya/portfolio",
     },
     {
       id: 3,
-      src: navbar,
+      src: Restaurant,
+      href: "https://shashankpandya.github.io/web_task_2/",
+      code: "https://github.com/shashankpandya/web_task_2",
     },
     {
       id: 4,
@@ -72,13 +78,13 @@ const Portfolio = () => {
                   className="w-1/2 px-6 py-3 m-4 duration-200 
               hover:scale-105"
                 >
-                  Demo {/*You can also map link of demos and codes also */}
+                  <a href={portfolio.href}>Demo</a>
                 </button>
                 <button
                   className="w-1/2 px-6 py-3 m-4 duration-200 
               hover:scale-105"
                 >
-                  Code
+                  <a href={portfolio.code}>Code</a>
                 </button>
               </div>
             </div>
