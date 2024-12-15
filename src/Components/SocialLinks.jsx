@@ -13,7 +13,7 @@ const SocialLinks = () => {
           <FaLinkedinIn size={30} />
         </>
       ),
-      href: "https://linkdin.com",
+      href: "https://www.linkedin.com/in/shashank-pandya-213366287/",
       style: "rounded-tr-md",
     },
     {
@@ -45,7 +45,7 @@ const SocialLinks = () => {
           <FaGithub size={30} />
         </>
       ),
-      href: "https://github.com",
+      href: "https://github.com/shashankpandya",
       style: "rounded-br-md",
     },
   ];

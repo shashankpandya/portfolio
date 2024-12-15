@@ -1,15 +1,15 @@
 import React from "react";
-import Bookstore from "../assets/portfolio/Bookstore.png";
+import Bookstore from "../assets/portfolio/Book Store.jpeg";
 
-import installNode from "../assets/portfolio/installNode.jpg";
+import BuyChai from "../assets/portfolio/Buy Chai.png";
 
-import Restaurant from "../assets/portfolio/Restaurant.png";
+import Restaurant from "../assets/portfolio/Heaven Restaurent.jpeg";
 
 import portfolio from "../assets/portfolio/Portfolio.png";
 
-import reactWeather from "../assets/portfolio/reactWeather.jpg";
+import reactWeather from "../assets/portfolio/Weather.png";
 
-import reactSmooth from "../assets/portfolio/reactSmooth.jpg";
+import cryptofolio from "../assets/portfolio/cryptofolio.png";
 
 const Portfolio = () => {
   const portfolios = [
@@ -27,21 +27,29 @@ const Portfolio = () => {
     },
     {
       id: 3,
-      src: Restaurant,
-      href: "https://shashankpandya.github.io/web_task_2/",
-      code: "https://github.com/shashankpandya/web_task_2",
+      src: cryptofolio,
+      href: "https://shashankpandya-crypto-portfolio.netlify.app/",
+      code: "https://github.com/shashankpandya/Crypto_Portfolio",
     },
+
     {
       id: 4,
       src: reactWeather,
+      href: "https://shashankpandya.github.io/Weather_app/",
+      code: "https://github.com/shashankpandya/Weather_app",
     },
+
     {
       id: 5,
-      src: reactSmooth,
+      src: Restaurant,
+      href: "https://shashankpandya.github.io/Web_Task_2/",
+      code: "https://github.com/shashankpandya/web_task_2",
     },
     {
       id: 6,
-      src: installNode,
+      src: BuyChai,
+      href: "https://paymmentt-mettaamaskk-by-sp.netlify.app/",
+      code: "https://github.com/shashankpandya/BuyChai",
     },
   ];
 

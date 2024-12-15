@@ -22,21 +22,21 @@ const Contacts = () => {
                 type="text"
                 name="name"
                 placeholder="Enter your name"
-                className="p-2 my-4 bg-transparent border-2 rounded-md text-white focus:outline-none"
+                className="p-3 my-4 bg-transparent border-2 rounded-md text-white focus:outline-none focus:border-cyan-500 transition duration-300"
               />
               <input
                 type="email"
-                name="name"
+                name="email"
                 placeholder="Enter your email"
-                className="p-2 my-4 bg-transparent border-2 rounded-md text-white focus:outline-none"
+                className="p-3 my-4 bg-transparent border-2 rounded-md text-white focus:outline-none focus:border-cyan-500 transition duration-300"
               />
               <textarea
                 name="message"
                 placeholder="Enter your message"
                 rows={10}
-                className="p-2 my-4 bg-transparent border-2 rounded-md text-white focus:outline-none"
+                className="p-3 my-4 bg-transparent border-2 rounded-md text-white focus:outline-none focus:border-cyan-500 transition duration-300"
               ></textarea>
-              <button className="text-white bg-gradient-to-b from-cyan-500 to-blue-500 px-6 py-3 my-4 mx-auto flex items-center rounded-md hover:scale-105 duration-300">
+              <button className="text-white bg-gradient-to-b from-cyan-500 to-blue-500 px-6 py-3 my-4 mx-auto flex items-center rounded-md hover:scale-105 duration-300 transition-transform">
                 Let's talk
               </button>
             </form>
