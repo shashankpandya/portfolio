@@ -29,8 +29,16 @@ const NavBar = () => {
   ];
 
   return (
-    <div className="flex justify-between items-center w-full h-20px-4 text-white bg-black  fixed">
-      <h1 className="text-5xl text-gray-200 font-signature ml-2">Shashank</h1>
+    <div className="flex justify-between items-center w-full h-20 px-4 
+      text-white fixed backdrop-blur-md bg-black/30 
+      border-b border-white/10 z-50">
+      <h1 className="text-5xl font-signature ml-2 
+        bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 
+        text-transparent bg-clip-text 
+        hover:from-purple-500 hover:via-blue-500 hover:to-cyan-500 
+        transition-all duration-500">
+        Shashank
+      </h1>
       <ul className="hidden md:flex">
         {links.map((link) => (
           <li

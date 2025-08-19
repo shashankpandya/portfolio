@@ -32,11 +32,20 @@ const Home = () => {
             </Link>
           </div>
         </div>
-        <div>
+        <div className="relative group">
           <img
             src={MyPic}
             alt="my profile pic."
-            className="rounded-2xl mx-auto w-2/3 md:w-full"
+            className="rounded-2xl mx-auto w-2/3 md:w-full 
+              transition-all duration-500 
+              group-hover:scale-105 group-hover:rotate-2
+              shadow-xl shadow-cyan-500/20"
+          />
+          <div className="absolute inset-0 rounded-2xl 
+            bg-gradient-to-r from-cyan-500/20 to-blue-500/20 
+            opacity-0 group-hover:opacity-100 
+            transition-opacity duration-500
+            blur-xl"
           />
         </div>
       </div>

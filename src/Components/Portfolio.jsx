@@ -15,10 +15,12 @@ const Portfolio = () => {
   const portfolios = [
     {
       id: 1,
-      src: Bookstore,
-      href: "https://shashankpandya.github.io/Web_Task_1.github.io/",
-      code: "https://github.com/shashankpandya/Web_Task_1.github.io",
+      src: cryptofolio,
+      href: "https://shashankpandya-crypto-portfolio.netlify.app/",
+      code: "https://github.com/shashankpandya/Crypto_Portfolio",
     },
+
+    
     {
       id: 2,
       src: portfolio,
@@ -27,11 +29,10 @@ const Portfolio = () => {
     },
     {
       id: 3,
-      src: cryptofolio,
-      href: "https://shashankpandya-crypto-portfolio.netlify.app/",
-      code: "https://github.com/shashankpandya/Crypto_Portfolio",
+      src: Bookstore,
+      href: "https://shashankpandya.github.io/Web_Task_1.github.io/",
+      code: "https://github.com/shashankpandya/Web_Task_1.github.io",
     },
-
     {
       id: 4,
       src: reactWeather,
@@ -74,18 +75,27 @@ const Portfolio = () => {
           {portfolios.map((portfolio) => (
             <div
               key={portfolio.id}
-              className="shadow-md shadow-gray-600 rounded-lg "
+              className="relative group overflow-hidden rounded-lg 
+                bg-gradient-to-b from-gray-900 to-black
+                border border-gray-800 hover:border-gray-700
+                transition-all duration-500 hover:scale-[1.02]"
             >
+              <div className="absolute inset-0 bg-gradient-to-r 
+                from-cyan-500/10 via-blue-500/10 to-purple-500/10 
+                opacity-0 group-hover:opacity-100 transition-opacity duration-500"/>
+              
               <img
                 src={portfolio.src}
                 alt=""
-                className="rounded-md duration-200 hover:scale-105"
+                className="rounded-t-lg duration-500 group-hover:scale-105"
               />
-              <div className="flex items-center justify-center">
-                <button
-                  className="w-1/2 px-6 py-3 m-4 duration-200 
-              hover:scale-105"
-                >
+              
+              <div className="flex items-center justify-center 
+                backdrop-blur-sm bg-black/50 p-4">
+                <button className="px-6 py-2 m-2 
+                  bg-gradient-to-r from-cyan-500 to-blue-500
+                  rounded-lg font-bold tracking-wider
+                  hover:scale-105 transition-all duration-300">
                   <a href={portfolio.href}>Demo</a>
                 </button>
                 <button

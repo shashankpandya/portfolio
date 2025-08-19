@@ -22,7 +22,12 @@ const Contacts = () => {
                 type="text"
                 name="name"
                 placeholder="Enter your name"
-                className="p-3 my-4 bg-transparent border-2 rounded-md text-white focus:outline-none focus:border-cyan-500 transition duration-300"
+                className="p-3 my-4 bg-transparent border-2 rounded-lg
+                  text-white focus:outline-none
+                  transition-all duration-300
+                 focus:border-cyan-500
+                  focus:shadow-[0_0_20px_rgba(6,182,212,0.2)]
+                  placeholder:text-gray-500"
               />
               <input
                 type="email"
@@ -36,8 +41,20 @@ const Contacts = () => {
                 rows={10}
                 className="p-3 my-4 bg-transparent border-2 rounded-md text-white focus:outline-none focus:border-cyan-500 transition duration-300"
               ></textarea>
-              <button className="text-white bg-gradient-to-b from-cyan-500 to-blue-500 px-6 py-3 my-4 mx-auto flex items-center rounded-md hover:scale-105 duration-300 transition-transform">
-                Let's talk
+              <button
+                className="relative overflow-hidden
+                text-white bg-gradient-to-r from-cyan-500 to-blue-500 
+                px-8 py-3 my-4 mx-auto rounded-lg
+                hover:scale-105 duration-300 transition-all
+                group"
+              >
+                <span className="relative z-10">Let's talk</span>
+                <div
+                  className="absolute inset-0 w-1/3 h-full 
+                  bg-white/20 skew-x-[45deg]
+                  group-hover:translate-x-[200%]
+                  transition-transform duration-1000"
+                />
               </button>
             </form>
           </div>
