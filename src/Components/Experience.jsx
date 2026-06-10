@@ -33,14 +33,6 @@ const skillCategories = [
   }
 ];
 
-const SkillBadge = ({ skill, color }) => {
-  return (
-    <span className={`px-4 py-2 bg-gradient-to-r ${color} rounded-full text-sm font-medium text-white shadow-lg hover:scale-105 transition-transform cursor-default`}>
-      {skill}
-    </span>
-  );
-};
-
 const SkillConstellation = () => {
   const [activeCategory, setActiveCategory] = useState(null);
   

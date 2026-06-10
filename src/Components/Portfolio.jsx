@@ -60,15 +60,12 @@ const projects = [
 ];
 
 const ProjectCard = ({ project, index, isVisible }) => {
-  const [isHovered, setIsHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
   return (
     <div
       className={`group relative transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       style={{ transitionDelay: `${index * 150}ms` }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Glow Effect */}
       <div className={`absolute -inset-1 bg-gradient-to-r ${project.color} rounded-2xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
