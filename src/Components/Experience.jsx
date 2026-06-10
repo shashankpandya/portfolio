@@ -1,197 +1,226 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import html from "../assets/html.png";
-import css from "../assets/css.png";
-import node from "../assets/node.png";
-import javascript from "../assets/javascript.png";
-import react from "../assets/react.png";
-import solidity from "../assets/solidity.png";
-import nextjs from "../assets/nextjs.png";
-import tailwind from "../assets/tailwind.png";
-import github from "../assets/github.png";
+const skillCategories = [
+  {
+    name: "Frontend",
+    skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML", "CSS"],
+    color: "from-blue-500 to-cyan-500",
+    icon: "🎨"
+  },
+  {
+    name: "Backend",
+    skills: ["Node.js", "Express", "Python", "REST APIs", "MongoDB", "MySQL"],
+    color: "from-green-500 to-emerald-500",
+    icon: "⚙️"
+  },
+  {
+    name: "Cloud & DevOps",
+    skills: ["AWS Lambda", "Docker", "GitHub Actions", "Linux", "Serverless"],
+    color: "from-orange-500 to-amber-500",
+    icon: "☁️"
+  },
+  {
+    name: "AI & Data",
+    skills: ["Gemini API", "HuggingFace", "Amazon Polly", "Transcribe", "DynamoDB"],
+    color: "from-purple-500 to-pink-500",
+    icon: "🤖"
+  },
+  {
+    name: "Blockchain",
+    skills: ["Solidity", "Smart Contracts", "Web3", "Hardhat", "Ethereum"],
+    color: "from-indigo-500 to-violet-500",
+    icon: "⛓️"
+  }
+];
+
+const SkillConstellation = () => {
+  const [activeCategory, setActiveCategory] = useState(null);
+  
+  return (
+    <div className="relative w-full h-80 flex items-center justify-center">
+      {/* Central Node */}
+      <div className="absolute center-node w-20 h-20 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.5)] animate-pulse-slow">
+        <span className="text-2xl">🚀</span>
+      </div>
+      
+      {/* Category Nodes */}
+      {skillCategories.map((category, index) => {
+        const angle = (index * 360) / skillCategories.length - 90;
+        const radius = 140;
+        const x = Math.cos((angle * Math.PI) / 180) * radius;
+        const y = Math.sin((angle * Math.PI) / 180) * radius;
+        
+        return (
+          <div
+            key={category.name}
+            className={`absolute cursor-pointer transition-all duration-500 ${
+              activeCategory === category.name ? 'scale-125' : 'hover:scale-110'
+            }`}
+            style={{ 
+              transform: `translate(${x}px, ${y}px)`,
+              left: '50%',
+              top: '50%',
+              marginLeft: '-50px',
+              marginTop: '-50px'
+            }}
+            onMouseEnter={() => setActiveCategory(category.name)}
+            onMouseLeave={() => setActiveCategory(null)}
+          >
+            <div className={`w-16 h-16 bg-gradient-to-r ${category.color} rounded-xl flex items-center justify-center shadow-lg`}>
+              <span className="text-2xl">{category.icon}</span>
+            </div>
+            <p className="absolute top-full mt-2 text-center text-sm font-semibold text-gray-300 whitespace-nowrap">
+              {category.name}
+            </p>
+            
+            {/* Connection Line */}
+            <div 
+              className="absolute w-px h-24 bg-gradient-to-b from-gray-700 to-gray-500 origin-top"
+              style={{
+                left: '50%',
+                bottom: '100%',
+                transform: `translateX(-50%) rotate(${angle + 90}deg)`,
+                transformOrigin: 'bottom center'
+              }}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 const Experience = () => {
-  const experiences = [
-    {
-      id: 1,
-      src: html,
-      name: "HTML",
-      style: "shadow-orange-500",
-      hoverBg: "group-hover:bg-orange-500/20",
-      textColor: "group-hover:text-orange-400",
-      glowColor: "group-hover:shadow-orange-500/50",
-    },
-    {
-      id: 2,
-      src: css,
-      name: "CSS",
-      style: "shadow-blue-500",
-      hoverBg: "group-hover:bg-blue-500/20",
-      textColor: "group-hover:text-blue-400",
-      glowColor: "group-hover:shadow-blue-500/50",
-    },
-    {
-      id: 3,
-      src: javascript,
-      name: "Javascript",
-      style: "shadow-yellow-500",
-      hoverBg: "group-hover:bg-yellow-500/20",
-      textColor: "group-hover:text-yellow-400",
-      glowColor: "group-hover:shadow-yellow-500/50",
-    },
-    {
-      id: 4,
-      src: react,
-      name: "React",
-      style: "shadow-blue-600",
-      hoverBg: "group-hover:bg-blue-600/20",
-      textColor: "group-hover:text-blue-400",
-      glowColor: "group-hover:shadow-blue-600/50",
-    },
-    {
-      id: 5,
-      src: node,
-      name: "Nodejs",
-      style: "shadow-green-500",
-      hoverBg: "group-hover:bg-green-500/20",
-      textColor: "group-hover:text-green-400",
-      glowColor: "group-hover:shadow-green-500/50",
-    },
-    {
-      id: 6,
-      src: solidity,
-      name: "Solidity",
-      style: "shadow-gray-400",
-      hoverBg: "group-hover:bg-gray-400/20",
-      textColor: "group-hover:text-gray-400",
-      glowColor: "group-hover:shadow-gray-400/50",
-    },
-    {
-      id: 7,
-      src: nextjs,
-      name: "Nextjs",
-      style: "shadow-white-500",
-      hoverBg: "group-hover:bg-white-500/20",
-      textColor: "group-hover:text-white-400",
-      glowColor: "group-hover:shadow-white-500/50",
-    },
-    {
-      id: 8,
-      src: tailwind,
-      name: "Tailwind",
-      style: "shadow-cyan-500",
-      hoverBg: "group-hover:bg-cyan-500/20",
-      textColor: "group-hover:text-cyan-400",
-      glowColor: "group-hover:shadow-cyan-500/50",
-    },
-    {
-      id: 9,
-      src: github,
-      name: "Github",
-      style: "shadow-gray-500",
-      hoverBg: "group-hover:bg-gray-500/20",
-      textColor: "group-hover:text-gray-400",
-      glowColor: "group-hover:shadow-gray-500/50",
-    },
-  ];
+  const [isVisible, setIsVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState("skills");
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div
-      name="experience"
-      className="bg-gradient-to-b from-gray-800 to-black w-full min-h-screen"
+    <section 
+      ref={sectionRef}
+      name="experience" 
+      className="relative py-32 w-full bg-gradient-to-b from-gray-950 via-black to-gray-900"
     >
-      <div
-        className="max-w-screen-lg mx-auto p-4 flex flex-col
-      justify-center w-full h-full text-white"
-      >
-        <div>
-          <p className="text-4xl font-bold fond-poppins border-b-4 border-gray-500 p-2 inline">
-            Experience
+      {/* Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]" 
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(6,182,212,0.5) 1px, transparent 0)`,
+            backgroundSize: '30px 30px'
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-screen-xl mx-auto px-6">
+        {/* Section Header */}
+        <div className={`text-center mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <p className="text-cyan-400 font-mono text-sm tracking-widest mb-4">&lt;Skills /&gt;</p>
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            Tech <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Stack</span>
+          </h2>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            Technologies I work with to bring ideas to life
           </p>
-          <p className="py-6">These are the technology I've worked with</p>
+          <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto rounded-full mt-6" />
         </div>
 
-        <div className="w-full grid grid-cols-2 sm:grid-cols-3 gap-12 text-center py-8 px-12 sm:px-0">
-          {experiences.map((experience) => (
-            <div
-              key={experience.id}
-              className={`
-                card relative h-[250px] w-[200px] mx-auto
-                perspective-[2500px] group cursor-pointer
-                transition-all duration-500 hover:z-10
-                ${experience.style}
-              `}
-            >
-              <div
-                className={`
-                absolute inset-0 rounded-xl opacity-0 
-                group-hover:opacity-100 transition-opacity duration-500
-                blur-xl bg-gradient-to-t ${experience.glowColor}
-              `}
-              />
+        {/* Tab Navigation */}
+        <div className={`flex justify-center gap-4 mb-12 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <button
+            onClick={() => setActiveTab("skills")}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === "skills"
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
+                : 'bg-gray-800/50 text-gray-400 hover:text-white border border-gray-700'
+            }`}
+          >
+            Skill Grid
+          </button>
+          <button
+            onClick={() => setActiveTab("constellation")}
+            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+              activeTab === "constellation"
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white'
+                : 'bg-gray-800/50 text-gray-400 hover:text-white border border-gray-700'
+            }`}
+          >
+            Constellation View
+          </button>
+        </div>
 
+        {/* Skill Grid View */}
+        <div className={`transition-all duration-700 ${activeTab === "skills" ? 'opacity-100' : 'opacity-0 hidden'} `}>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {skillCategories.map((category, index) => (
               <div
-                className={`
-                  wrapper absolute w-full h-full transition-all duration-500 
-                  bg-gradient-to-b from-gray-900/90 via-gray-900/80 to-gray-800/90
-                  group-hover:transform group-hover:translate-y-[-5%] 
-                  group-hover:rotate-x-[25deg] group-hover:translate-z-0
-                  rounded-xl shadow-lg
-                  border border-gray-800/50 group-hover:border-gray-700/50
-                  backdrop-blur-sm backdrop-saturate-200
-                  ${experience.hoverBg}
-                  before:absolute before:inset-0 before:rounded-xl
-                  before:bg-gradient-to-b before:from-transparent before:to-transparent
-                  before:border-t before:border-white/10
-                  group-hover:before:opacity-100
-                  overflow-hidden
-                `}
+                key={category.name}
+                className={`p-8 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-gray-700 transition-all duration-500 group ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <div className="relative w-full h-full flex flex-col items-center justify-center p-6">
-                  <div
-                    className="
-                    absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]
-                    animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500
-                  "
-                  />
-
-                  <img
-                    src={experience.src}
-                    alt=""
-                    className="w-24 transition-all duration-500
-                    group-hover:transform group-hover:translate-z-[100px] 
-                    group-hover:translate-y-[-20px] group-hover:scale-125
-                    drop-shadow-2xl animate-float"
-                  />
-
-                  <p
-                    className={`
-                    mt-6 text-xl font-bold transition-all duration-500
-                    group-hover:transform group-hover:translate-z-[100px] 
-                    group-hover:translate-y-[-10px] group-hover:scale-110
-                    tracking-wider
-                    ${experience.textColor}
-                  `}
-                  >
-                    {experience.name}
-                  </p>
-
-                  <div
-                    className="
-                    absolute inset-0 opacity-0 group-hover:opacity-100 
-                    transition-opacity duration-1000 delay-100
-                    bg-gradient-to-tr from-transparent via-white/5 to-transparent
-                    translate-x-[-100%] group-hover:translate-x-[100%]
-                    transition-transform duration-1000 ease-in-out
-                  "
-                  />
+                <div className="flex items-center gap-4 mb-6">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${category.color} flex items-center justify-center text-2xl`}>
+                    {category.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">
+                    {category.name}
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {category.skills.map((skill) => (
+                    <span 
+                      key={skill}
+                      className={`px-4 py-2 bg-gradient-to-r ${category.color} bg-opacity-20 rounded-full text-sm font-medium text-gray-300 border border-gray-700 hover:border-gray-600 transition-colors cursor-default`}
+                    >
+                      {skill}
+                    </span>
+                  ))}
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Constellation View */}
+        <div className={`transition-all duration-700 ${activeTab === "constellation" ? 'opacity-100' : 'opacity-0 hidden'}`}>
+          <div className="bg-gray-900/30 rounded-3xl border border-gray-800 p-12">
+            <SkillConstellation />
+            <p className="text-center text-gray-500 mt-8">Hover over the nodes to explore my skill categories</p>
+          </div>
+        </div>
+
+        {/* Certification Badge */}
+        <div className={`mt-16 text-center transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div className="inline-flex items-center gap-4 px-8 py-4 bg-gradient-to-r from-gray-800/50 to-gray-900/50 rounded-2xl border border-gray-700">
+            <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
+              <span className="text-2xl">🏆</span>
             </div>
-          ))}
+            <div className="text-left">
+              <p className="text-white font-bold">AWS Cloud Practitioner</p>
+              <p className="text-gray-500 text-sm">Building serverless architectures</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
