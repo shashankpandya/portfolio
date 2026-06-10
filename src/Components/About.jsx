@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 
 const About = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
   const sectionRef = useRef(null);
+  const cardRef = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -21,6 +23,20 @@ const About = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (cardRef.current) {
+        const rect = cardRef.current.getBoundingClientRect();
+        setMousePos({
+          x: (e.clientX - rect.left) / rect.width,
+          y: (e.clientY - rect.top) / rect.height
+        });
+      }
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   const highlights = [
     {
       icon: (
@@ -29,7 +45,8 @@ const About = () => {
         </svg>
       ),
       title: "Problem Solver",
-      desc: "Turning complex challenges into elegant code solutions"
+      desc: "Turning complex challenges into elegant code solutions",
+      color: "from-cyan-500 to-blue-500"
     },
     {
       icon: (
@@ -38,7 +55,8 @@ const About = () => {
         </svg>
       ),
       title: "Full-Stack Dev",
-      desc: "From React UIs to AWS Lambda, I build complete systems"
+      desc: "From React UIs to AWS Lambda, I build complete systems",
+      color: "from-purple-500 to-pink-500"
     },
     {
       icon: (
@@ -47,23 +65,24 @@ const About = () => {
         </svg>
       ),
       title: "AI Enthusiast",
-      desc: "Integrating Generative AI to build smarter applications"
+      desc: "Integrating Generative AI to build smarter applications",
+      color: "from-orange-500 to-yellow-500"
     }
   ];
 
   const journey = [
-    { year: "2021", event: "Joined IIT Kharagpur" },
-    { year: "2022", event: "First React Project" },
-    { year: "2023", event: "AWS Cloud Journey" },
-    { year: "2024", event: "AI/ML Deep Dive" },
-    { year: "Now", event: "Building Impactful Solutions" }
+    { year: "2021", event: "Joined IIT Kharagpur", icon: "🎓" },
+    { year: "2022", event: "First React Project", icon: "⚛️" },
+    { year: "2023", event: "AWS Cloud Journey", icon: "☁️" },
+    { year: "2024", event: "AI/ML Deep Dive", icon: "🤖" },
+    { year: "Now", event: "Building Impactful Solutions", icon: "🚀" }
   ];
 
   return (
     <section 
       ref={sectionRef}
       name="about" 
-      className="relative py-32 w-full bg-gradient-to-b from-black via-gray-950 to-gray-900"
+      className="relative py-32 w-full bg-gradient-to-b from-black via-gray-950 to-gray-900 overflow-hidden"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.02]" 
@@ -73,11 +92,17 @@ const About = () => {
         }}
       />
 
+      {/* Animated Orbs */}
+      <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+
       <div className="relative z-10 max-w-screen-xl mx-auto px-6">
         {/* Section Header */}
         <div className={`text-center mb-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <p className="text-cyan-400 font-mono text-sm tracking-widest mb-4">&lt;About Me /&gt;</p>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+          <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-gray-800/50 backdrop-blur-sm border border-cyan-500/20 mb-6">
+            <span className="text-cyan-400 font-mono text-sm">&lt;About Me /&gt;</span>
+          </div>
+          <h2 className="text-5xl md:text-7xl font-black text-white mb-6">
             The <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Story</span> So Far
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 mx-auto rounded-full" />
@@ -86,20 +111,35 @@ const About = () => {
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left: Story */}
-          <div className={`space-y-8 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-            <div className="relative p-8 rounded-2xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50">
-              <div className="absolute -top-4 -left-4 w-8 h-8 bg-cyan-500/20 rounded-lg rotate-12" />
-              <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-purple-500/20 rounded-lg -rotate-12" />
+          <div 
+            ref={cardRef}
+            className={`space-y-8 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
+            style={{
+              transform: `rotateX(${(mousePos.y - 0.5) * -3}deg) rotateY(${(mousePos.x - 0.5) * 3}deg)`,
+              transition: 'transform 0.2s ease-out'
+            }}
+          >
+            {/* Main Card with 3D Effect */}
+            <div className="relative p-10 rounded-3xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-gray-700/50 group-hover:border-cyan-500/30 transition-all duration-500">
+              {/* Glow Effect */}
+              <div 
+                className="absolute -inset-1 rounded-3xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-700"
+                style={{
+                  background: `radial-gradient(circle at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(6,182,212,0.3) 0%, transparent 50%)`
+                }}
+              />
               
-              <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-                <span className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse" />
-                IIT Kharagpur — My Launchpad
-              </h3>
-              <p className="text-gray-400 leading-relaxed">
-                As a <span className="text-white font-semibold">B.Tech student at one of India's most prestigious engineering institutions</span>, 
-                I'm not just learning to code — I'm learning to think. The rigorous curriculum and collaborative environment 
-                at IIT Kharagpur has shaped my approach to problem-solving: break it down, build it up, iterate relentlessly.
-              </p>
+              <div className="relative">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse shadow-[0_0_20px_rgba(74,222,128,0.8)]" />
+                  <h3 className="text-2xl font-bold text-white">IIT Kharagpur — My Launchpad</h3>
+                </div>
+                <p className="text-gray-300 leading-relaxed text-lg">
+                  As a <span className="text-white font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text">B.Tech student at India's premier engineering institution</span>, 
+                  I'm not just learning to code — I'm learning to think. The rigorous curriculum and collaborative environment 
+                  at IIT Kharagpur has shaped my approach to problem-solving: <span className="text-cyan-400">break it down</span>, <span className="text-purple-400">build it up</span>, <span className="text-pink-400">iterate relentlessly</span>.
+                </p>
+              </div>
             </div>
 
             <p className="text-lg text-gray-300 leading-relaxed">
@@ -115,13 +155,14 @@ const About = () => {
             </p>
 
             {/* Code Block Decoration */}
-            <div className="relative p-6 rounded-xl bg-gray-950 border border-gray-800 font-mono text-sm overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-8 bg-gray-800 flex items-center px-4 gap-2">
+            <div className="relative p-8 rounded-2xl bg-gray-950 border border-gray-800 font-mono text-sm overflow-hidden group">
+              <div className="absolute top-0 left-0 right-0 h-10 bg-gray-800 flex items-center px-4 gap-2">
                 <span className="w-3 h-3 rounded-full bg-red-500" />
                 <span className="w-3 h-3 rounded-full bg-yellow-500" />
                 <span className="w-3 h-3 rounded-full bg-green-500" />
+                <span className="ml-4 text-gray-500 text-xs">mission.js</span>
               </div>
-              <pre className="pt-8 text-gray-400 overflow-x-auto">
+              <pre className="pt-12 text-gray-400 overflow-x-auto">
                 <span className="text-purple-400">const</span> <span className="text-cyan-400">mission</span> = {'{'}
                 <br />
                 &nbsp;&nbsp;build: <span className="text-green-400">"meaningful software"</span>,
@@ -137,64 +178,77 @@ const About = () => {
 
           {/* Right: Highlights & Timeline */}
           <div className={`space-y-8 transition-all duration-1000 delay-400 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
-            {/* Highlights */}
+            {/* Highlights with 3D Cards */}
             <div className="grid gap-6">
               {highlights.map((item, index) => (
                 <div 
                   key={index}
-                  className="group flex gap-6 p-6 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-cyan-500/50 transition-all duration-300 hover:bg-gray-800/50"
+                  className="group relative p-6 rounded-2xl bg-gray-900/50 border border-gray-800 hover:border-transparent transition-all duration-500 overflow-hidden"
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
-                  <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-white mb-2">{item.title}</h4>
-                    <p className="text-gray-400">{item.desc}</p>
+                  {/* 3D Glow */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl`} />
+                  
+                  <div className="relative flex gap-6">
+                    <div className={`flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-r ${item.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 group-hover:rotate-y-180 transition-all duration-500`}
+                      style={{ transformStyle: 'preserve-3d' }}
+                    >
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">{item.title}</h4>
+                      <p className="text-gray-400">{item.desc}</p>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Timeline */}
-            <div className="relative pl-8 border-l-2 border-gray-700">
-              <h4 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                My Journey
+            {/* Timeline with 3D Effect */}
+            <div className="relative pl-12 border-l-2 border-gray-800">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-cyan-500/5 to-purple-500/5 rounded-l-full" />
+              <h4 className="text-lg font-bold text-white mb-8 flex items-center gap-2 relative">
+                <span className="text-2xl">⏳</span> My Journey
               </h4>
               {journey.map((item, index) => (
                 <div 
                   key={index}
-                  className="relative mb-8 last:mb-0"
-                  style={{ animationDelay: `${index * 150}ms` }}
+                  className="relative mb-8 last:mb-0 group"
+                  style={{ transitionDelay: `${index * 150}ms` }}
                 >
-                  <div className="absolute -left-[41px] w-4 h-4 rounded-full bg-gray-800 border-4 border-cyan-500" />
-                  <p className="text-cyan-400 font-mono text-sm">{item.year}</p>
-                  <p className="text-white font-medium mt-1">{item.event}</p>
+                  <div className="absolute -left-[52px] w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 flex items-center justify-center text-lg shadow-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-300">
+                    {item.icon}
+                  </div>
+                  <div className="absolute -left-[52px] top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-gray-900 border-4 border-cyan-500 group-hover:bg-cyan-500 transition-colors" />
+                  <p className="text-cyan-400 font-mono text-sm group-hover:translate-x-2 transition-transform">{item.year}</p>
+                  <p className="text-white font-medium mt-1 group-hover:text-cyan-400 transition-colors">{item.event}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Stats Bar */}
+        {/* Stats Bar with 3D Effect */}
         <div className={`mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 transition-all duration-1000 delay-600 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {[
-            { value: "4+", label: "Projects Shipped" },
-            { value: "10+", label: "Technologies" },
-            { value: "AWS", label: "Certified Skills" },
-            { value: "∞", label: "Curiosity" }
+            { value: "4+", label: "Projects Shipped", icon: "🚀", color: "from-cyan-500 to-blue-500" },
+            { value: "10+", label: "Technologies", icon: "⚡", color: "from-purple-500 to-pink-500" },
+            { value: "AWS", label: "Certified Skills", icon: "☁️", color: "from-orange-500 to-yellow-500" },
+            { value: "∞", label: "Curiosity", icon: "💡", color: "from-green-500 to-emerald-500" }
           ].map((stat, index) => (
             <div 
               key={index}
-              className="text-center p-6 rounded-xl bg-gray-800/30 border border-gray-700/50 hover:border-cyan-500/50 transition-colors group"
+              className="group relative text-center p-8 rounded-2xl bg-gray-800/30 border border-gray-700/50 hover:border-transparent transition-all duration-500 overflow-hidden"
+              style={{ transform: `translateZ(${index * 10}px)` }}
             >
-              <p className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
-                {stat.value}
-              </p>
-              <p className="text-gray-500 mt-2 text-sm">{stat.label}</p>
+              <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl`} />
+              <div className="relative">
+                <span className="text-4xl mb-4 block">{stat.icon}</span>
+                <p className={`text-4xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent group-hover:scale-110 transition-transform`}>
+                  {stat.value}
+                </p>
+                <p className="text-gray-500 mt-2 text-sm">{stat.label}</p>
+              </div>
             </div>
           ))}
         </div>
