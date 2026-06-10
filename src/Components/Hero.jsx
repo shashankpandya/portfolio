@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import MyPic from "../assets/Img.jpg";
+import MyPic from "../assets/Img2.jpg";
 
 const Hero = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
