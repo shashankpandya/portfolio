@@ -179,7 +179,17 @@ const Hero = () => {
               >
                 SHASHANK
               </span>
+              {/* SEO: Screen reader only text for accessibility */}
+              <span className="sr-only">Pandya - Full-Stack Developer &amp; AI Engineer at IIT Kharagpur</span>
             </h1>
+            {/* Subtitle for SEO - visible but subtle */}
+            <p className="text-gray-400 text-xl md:text-2xl font-light mt-4">
+              <span className="text-cyan-400/70">Full-Stack Developer</span>
+              <span className="mx-2">•</span>
+              <span className="text-purple-400/70">AI/ML Engineer</span>
+              <span className="mx-2">•</span>
+              <span className="text-blue-400/70">IIT Kharagpur</span>
+            </p>
             
             {/* Animated Title with Glitch Effect */}
             <div className="flex items-center gap-4 justify-center lg:justify-start mt-6">
