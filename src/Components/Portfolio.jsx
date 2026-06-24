@@ -144,11 +144,11 @@ const ProjectCard = ({ project, index, isVisible }) => {
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex-1 py-3 text-center bg-gradient-to-r ${project.color} rounded-xl font-semibold text-white hover:scale-105 transition-transform`}
+              className={`flex-1 py-3 min-h-[48px] text-center bg-gradient-to-r ${project.color} rounded-xl font-semibold text-white hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900`}
             >
               View Code
             </a>
-            <button className="px-6 py-3 border border-gray-700 rounded-xl text-gray-400 hover:border-gray-500 hover:text-white transition-all">
+            <button className="px-6 py-3 min-h-[48px] border border-gray-700 rounded-xl text-gray-400 hover:border-gray-500 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-900">
               Demo
             </button>
           </div>

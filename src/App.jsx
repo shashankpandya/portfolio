@@ -14,15 +14,22 @@ function App() {
   }, []);
 
   return (
-    <div className="App bg-black min-h-screen">
-      <NavBar />
-      <Hero />
-      <About />
-      <Portfolio />
-      <Experience />
-      <Contacts />
-      <Terminal />
-    </div>
+    <>
+      {/* Skip to main content link for accessibility */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      
+      <div className="App bg-black min-h-screen" id="main-content">
+        <NavBar />
+        <Hero />
+        <About />
+        <Portfolio />
+        <Experience />
+        <Contacts />
+        <Terminal />
+      </div>
+    </>
   );
 }
 
