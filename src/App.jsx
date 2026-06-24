@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaGithub, FaLinkedin, FaEnvelope, FaExternalLinkAlt, FaDownload, FaBars, FaTimes, FaArrowDown, FaChevronRight, FaCode, FaServer, FaCloud, FaRobot, FaMapMarkerAlt, FaGraduationCap, FaBriefcase, FaAward, FaBrain } from 'react-icons/fa';
-import { SiReact, SiNodedotjs, SiMongodb, SiDocker, SiAmazonaws, SiFlask } from 'react-icons/si';
+import { SiReact, SiNodedotjs, SiMongodb, SiDocker, SiAmazonaws } from 'react-icons/si';
 
 // Animation hook
 function useInView(threshold = 0.1) {
