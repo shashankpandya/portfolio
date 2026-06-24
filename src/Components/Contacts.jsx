@@ -160,11 +160,11 @@ const Contacts = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting || submitted}
-                  className={`w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
+                  className={`w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-3 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-gray-900 ${
                     submitted 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:scale-105'
-                  } disabled:opacity-70`}
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:from-cyan-500 hover:to-blue-500 hover:shadow-[0_0_30px_rgba(6,182,212,0.5)] hover:scale-105'
+                  } disabled:opacity-70 focus:opacity-90`}
                 >
                   {submitted ? (
                     <>

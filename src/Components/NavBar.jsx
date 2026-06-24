@@ -56,7 +56,7 @@ const NavBar = () => {
                 smooth
                 duration={500}
                 offset={-80}
-                className="relative text-gray-400 hover:text-white font-medium transition-colors cursor-pointer group"
+                className="relative text-gray-400 hover:text-white font-medium transition-colors cursor-pointer group focus:outline-none focus:text-white"
               >
                 {link.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 group-hover:w-full transition-all duration-300" />
@@ -72,7 +72,7 @@ const NavBar = () => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-cyan-400 transition-colors text-xl"
+                className="text-gray-400 hover:text-cyan-400 transition-colors text-xl focus:outline-none focus:text-cyan-400"
                 aria-label={link.label}
               >
                 {link.icon}
@@ -80,7 +80,7 @@ const NavBar = () => {
             ))}
             <a
               href="mailto:pandyashashank1@gmail.com"
-              className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg text-white font-semibold hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all duration-300 hover:scale-105"
+              className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg text-white font-semibold hover:from-cyan-500 hover:to-blue-500 hover:shadow-[0_0_20px_rgba(6,182,212,0.5)] focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-gray-950 transition-all duration-300 hover:scale-105 active:scale-95"
             >
               Hire Me
             </a>
