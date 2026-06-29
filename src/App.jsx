@@ -6,7 +6,8 @@ import {
   FaSun, FaMoon, FaCheck, FaArrowRight, FaChevronDown,
   FaPython, FaJsSquare, FaJava, FaReact, FaNodeJs,
   FaDocker, FaGitAlt, FaDatabase, FaLinux, FaMicrochip,
-  FaUniversalAccess, FaEye, FaStar, FaArrowUp, FaLaptopCode
+  FaUniversalAccess, FaEye, FaStar, FaArrowUp, FaLaptopCode,
+  FaPlay, FaLayerGroup
 } from 'react-icons/fa';
 import { 
   SiTensorflow, SiPytorch, SiMongodb, SiPostgresql, SiRedis, 
@@ -113,6 +114,31 @@ function Section({ children, id, className = '', delay = 0 }) {
   );
 }
 
+// Magnetic Button Effect
+function MagneticButton({ children, className = '' }) {
+  const ref = useRef(null);
+  
+  const handleMouseMove = (e) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    ref.current.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+  };
+  
+  const handleMouseLeave = () => {
+    if (ref.current) {
+      ref.current.style.transform = 'translate(0, 0)';
+    }
+  };
+  
+  return (
+    <div ref={ref} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className={`transition-transform duration-150 ease-out ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 // Tilt Effect Hook
 function useTilt() {
   const ref = useRef(null);
@@ -124,8 +150,8 @@ function useTilt() {
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    const rotateX = (y - centerY) / 20;
-    const rotateY = (centerX - x) / 20;
+    const rotateX = (y - centerY) / 15;
+    const rotateY = (centerX - x) / 15;
     
     ref.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
   };
@@ -137,6 +163,22 @@ function useTilt() {
   };
   
   return { ref, handleMouseMove, handleMouseLeave };
+}
+
+// Animated Text Reveal
+function TextReveal({ children, className = '' }) {
+  const [ref, isInView] = useInView(0.8);
+  
+  return (
+    <div ref={ref} className={`overflow-hidden ${className}`}>
+      <div style={{
+        transform: isInView ? 'translateY(0)' : 'translateY(100%)',
+        transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+      }}>
+        {children}
+      </div>
+    </div>
+  );
 }
 
 // Navigation Component
@@ -165,7 +207,7 @@ function Navigation({ isScrolled }) {
     <nav 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled 
-          ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg dark:shadow-black/20 border-b border-gray-200 dark:border-gray-800' 
+          ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg dark:shadow-black/20 border-b border-gray-200/50 dark:border-gray-800/50' 
           : 'bg-transparent'
       }`}
       role="navigation"
@@ -174,19 +216,21 @@ function Navigation({ isScrolled }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <a 
-            href="#hero" 
-            onClick={(e) => handleNavClick(e, '#hero')}
-            className="flex items-center gap-2 group"
-            aria-label="Shashank Pandya - Home"
-          >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-cyan-500/30 transition-all duration-300 group-hover:scale-105 animate-glow-pulse">
-              SP
-            </div>
-            <span className="hidden sm:block text-lg font-bold text-gray-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-              Shashank Pandya
-            </span>
-          </a>
+          <MagneticButton>
+            <a 
+              href="#hero" 
+              onClick={(e) => handleNavClick(e, '#hero')}
+              className="flex items-center gap-2 group"
+              aria-label="Shashank Pandya - Home"
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-cyan-500/30 transition-all duration-300 group-hover:scale-105">
+                SP
+              </div>
+              <span className="hidden sm:block text-lg font-bold text-gray-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                Shashank Pandya
+              </span>
+            </a>
+          </MagneticButton>
           
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
@@ -196,7 +240,6 @@ function Navigation({ isScrolled }) {
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
                 className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors relative group"
-                style={{ animationDelay: `${index * 100}ms` }}
               >
                 {item.name}
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-cyan-500 group-hover:w-full transition-all duration-300" />
@@ -207,23 +250,27 @@ function Navigation({ isScrolled }) {
           {/* Right Side Actions */}
           <div className="flex items-center gap-2 sm:gap-4">
             {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hover:scale-110"
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {isDark ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
-            </button>
+            <MagneticButton>
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-110"
+                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              >
+                {isDark ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-5 h-5" />}
+              </button>
+            </MagneticButton>
             
             {/* Resume Button */}
-            <a
-              href="/CV_Shashank_Pandya.pdf"
-              download="Shashank_Pandya_Resume.pdf"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:-translate-y-0.5 animate-border-glow"
-            >
-              <FaDownload className="w-4 h-4" />
-              Resume
-            </a>
+            <MagneticButton>
+              <a
+                href="/CV_Shashank_Pandya.pdf"
+                download="Shashank_Pandya_Resume.pdf"
+                className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:-translate-y-0.5"
+              >
+                <FaDownload className="w-4 h-4" />
+                Resume
+              </a>
+            </MagneticButton>
             
             {/* Mobile Menu Button */}
             <button 
@@ -257,7 +304,7 @@ function Navigation({ isScrolled }) {
             <a
               href="/CV_Shashank_Pandya.pdf"
               download="Shashank_Pandya_Resume.pdf"
-              className="flex items-center justify-center gap-2 mx-4 mt-4 px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-lg"
+              className="flex items-center justify-center gap-2 mx-4 mt-4 px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl"
             >
               <FaDownload className="w-4 h-4" />
               Download Resume
@@ -269,7 +316,7 @@ function Navigation({ isScrolled }) {
   );
 }
 
-// Particle Background
+// Particle Background with gradient colors
 function ParticleBackground() {
   const canvasRef = useRef(null);
   
@@ -287,16 +334,18 @@ function ParticleBackground() {
     window.addEventListener('resize', resize);
     
     const particles = [];
-    const particleCount = 50;
+    const particleCount = 60;
+    const colors = ['#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899'];
     
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: Math.random() * 2 + 1,
-        opacity: Math.random() * 0.5 + 0.1
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        radius: Math.random() * 3 + 1,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        opacity: Math.random() * 0.6 + 0.2
       });
     }
     
@@ -310,9 +359,14 @@ function ParticleBackground() {
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
         
+        // Draw particle with glow
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 2);
+        gradient.addColorStop(0, p.color);
+        gradient.addColorStop(1, 'transparent');
+        
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(6, 182, 212, ${p.opacity})`;
+        ctx.fillStyle = gradient;
         ctx.fill();
         
         // Connect nearby particles
@@ -321,11 +375,12 @@ function ParticleBackground() {
           const dy = p.y - p2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           
-          if (dist < 150) {
+          if (dist < 120) {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(6, 182, 212, ${0.1 * (1 - dist / 150)})`;
+            ctx.strokeStyle = `rgba(6, 182, 212, ${0.15 * (1 - dist / 120)})`;
+            ctx.lineWidth = 1;
             ctx.stroke();
           }
         });
@@ -345,7 +400,7 @@ function ParticleBackground() {
   return (
     <canvas 
       ref={canvasRef} 
-      className="absolute inset-0 w-full h-full pointer-events-none opacity-30"
+      className="absolute inset-0 w-full h-full pointer-events-none"
       aria-hidden="true"
     />
   );
@@ -366,43 +421,45 @@ function Hero() {
       
       {/* Gradient Orbs */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-1/4 w-72 h-72 bg-cyan-400/20 dark:bg-cyan-500/10 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-400/20 dark:bg-purple-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-blue-400/20 dark:bg-blue-500/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-20 left-1/4 w-96 h-96 bg-cyan-400/20 dark:bg-cyan-500/10 rounded-full blur-[120px] animate-pulse" />
+        <div className="absolute bottom-20 right-1/4 w-[500px] h-[500px] bg-purple-400/20 dark:bg-purple-500/10 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/3 right-1/3 w-72 h-72 bg-blue-400/20 dark:bg-blue-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
         
         {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000008_1px,transparent_1px),linear-gradient(to_bottom,#00000008_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#00000005_1px,transparent_1px),linear-gradient(to_bottom,#00000005_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]" />
       </div>
       
       <div ref={ref} className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-          {/* Profile Image */}
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          {/* Profile Image with Animation */}
           <div 
-            className="flex-1 transition-all duration-700 order-2 lg:order-1"
-            style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateX(0)' : 'translateX(-50px)', transitionDelay: '200ms' }}
+            className="flex-1 transition-all duration-1000 order-2 lg:order-1"
+            style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateX(0) scale(1)' : 'translateX(-80px) scale(0.8)', transitionDelay: '200ms' }}
           >
-            <div className="relative mx-auto lg:mx-0 w-64 h-64 sm:w-80 sm:h-80">
-              {/* Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 rounded-full blur-2xl opacity-50 animate-pulse" />
+            <div className="relative mx-auto lg:mx-0 w-72 h-72 sm:w-80 sm:h-80 lg:w-96 lg:h-96">
+              {/* Glow Rings */}
+              <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30 animate-spin-slow" style={{ animationDuration: '20s' }} />
+              <div className="absolute -inset-4 rounded-full border border-purple-500/20 animate-spin-slow" style={{ animationDuration: '25s', animationDirection: 'reverse' }} />
               
               {/* Image Container */}
               <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-2xl">
                 <img 
-                  src="https://avatars.githubusercontent.com/u/146766254?v=4" 
-                  alt="Shashank Pandya - Full Stack Developer and AI/ML Engineer"
+                  src="/profile.jpg" 
+                  alt="Shashank Pandya - Full Stack Developer and AI/ML Engineer at IIT Kharagpur"
                   className="w-full h-full object-cover"
                   loading="eager"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/20 to-transparent" />
               </div>
               
               {/* Floating Badges */}
-              <div className="absolute -top-2 -right-2 px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold rounded-full shadow-lg animate-bounce">
-                AI/ML
+              <div className="absolute -top-4 -right-4 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold rounded-full shadow-lg animate-bounce-slow">
+                AI/ML ✨
               </div>
-              <div className="absolute -bottom-2 -left-2 px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xs font-bold rounded-full shadow-lg" style={{ animation: 'bounce 2s infinite 0.5s' }}>
-                Full-Stack
+              <div className="absolute -bottom-4 -left-4 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-600 text-white text-sm font-bold rounded-full shadow-lg" style={{ animation: 'bounce 2s infinite 0.5s' }}>
+                Full-Stack 🚀
               </div>
-              <div className="absolute top-1/2 -right-8 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold rounded-full shadow-lg hidden lg:block" style={{ animation: 'bounce 2s infinite 1s' }}>
+              <div className="absolute top-1/2 -right-10 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-bold rounded-full shadow-lg hidden lg:block" style={{ animation: 'bounce 2s infinite 1s' }}>
                 AWS ☁️
               </div>
             </div>
@@ -413,21 +470,21 @@ function Hero() {
             {/* Status Badge */}
             <div 
               className="mb-6 transition-all duration-700"
-              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(20px)', transitionDelay: '100ms' }}
+              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(30px)', transitionDelay: '100ms' }}
             >
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20">
-                <span className="relative flex h-2.5 w-2.5">
+              <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 backdrop-blur-sm">
+                <span className="relative flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                 </span>
-                <span className="text-sm text-green-700 dark:text-green-400 font-medium">Available for Opportunities</span>
+                <span className="text-sm text-green-700 dark:text-green-400 font-semibold">Available for Opportunities</span>
               </span>
             </div>
             
             {/* Main Heading */}
             <h1 
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 transition-all duration-700"
-              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(30px)', transitionDelay: '200ms' }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 transition-all duration-700"
+              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(40px)', transitionDelay: '200ms' }}
             >
               <span className="text-gray-900 dark:text-white">Hi, I'm </span>
               <br />
@@ -439,52 +496,56 @@ function Hero() {
             {/* Subtitle */}
             <p 
               className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-400 mb-8 max-w-xl mx-auto lg:mx-0 transition-all duration-700"
-              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(30px)', transitionDelay: '300ms' }}
+              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(40px)', transitionDelay: '300ms' }}
             >
-              <span className="text-cyan-600 dark:text-cyan-400 font-semibold">B.Tech Student at IIT Kharagpur</span> passionate about building 
-              <span className="text-purple-600 dark:text-purple-400"> AI-powered solutions</span> and 
-              <span className="text-blue-600 dark:text-blue-400"> scalable web applications</span>.
+              <span className="text-cyan-600 dark:text-cyan-400 font-bold">B.Tech Student at IIT Kharagpur</span> passionate about building 
+              <span className="text-purple-600 dark:text-purple-400 font-semibold"> AI-powered solutions</span> and 
+              <span className="text-blue-600 dark:text-blue-400 font-semibold"> scalable web applications</span>.
             </p>
             
             {/* CTA Buttons */}
             <div 
               className="flex flex-wrap gap-4 justify-center lg:justify-start transition-all duration-700"
-              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(30px)', transitionDelay: '400ms' }}
+              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(40px)', transitionDelay: '400ms' }}
             >
-              <a 
-                href="#projects" 
-                onClick={(e) => { e.preventDefault(); document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:-translate-y-1 flex items-center gap-2"
-              >
-                View My Work
-                <FaArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
-              <a 
-                href="#contact" 
-                onClick={(e) => { e.preventDefault(); document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="group px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold hover:border-cyan-500 dark:hover:border-cyan-400 transition-all duration-300 hover:-translate-y-1 flex items-center gap-2"
-              >
-                Get In Touch
-                <FaArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </a>
+              <MagneticButton>
+                <a 
+                  href="#projects" 
+                  onClick={(e) => { e.preventDefault(); document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' }); }}
+                  className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-xl shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:-translate-y-2 flex items-center gap-2"
+                >
+                  View My Work
+                  <FaArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                </a>
+              </MagneticButton>
+              <MagneticButton>
+                <a 
+                  href="#contact" 
+                  onClick={(e) => { e.preventDefault(); document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }); }}
+                  className="group px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700 rounded-xl font-bold hover:border-cyan-500 dark:hover:border-cyan-400 transition-all duration-300 hover:-translate-y-2 flex items-center gap-2"
+                >
+                  Get In Touch
+                  <FaArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                </a>
+              </MagneticButton>
             </div>
             
             {/* Stats */}
             <div 
-              className="mt-12 flex flex-wrap gap-8 justify-center lg:justify-start transition-all duration-700"
-              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(30px)', transitionDelay: '500ms' }}
+              className="mt-16 flex flex-wrap gap-8 justify-center lg:justify-start transition-all duration-700"
+              style={{ opacity: isInView ? 1 : 0, transform: isInView ? 'translateY(0)' : 'translateY(40px)', transitionDelay: '500ms' }}
             >
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900 dark:text-white"><AnimatedCounter end={20} suffix="+" /></div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Repositories</div>
+              <div className="text-center group">
+                <div className="text-4xl font-black text-gray-900 dark:text-white group-hover:text-cyan-500 transition-colors"><AnimatedCounter end={20} suffix="+" /></div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Repositories</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900 dark:text-white"><AnimatedCounter end={7} /></div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Followers</div>
+              <div className="text-center group">
+                <div className="text-4xl font-black text-gray-900 dark:text-white group-hover:text-purple-500 transition-colors"><AnimatedCounter end={7} /></div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Followers</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-gray-900 dark:text-white"><AnimatedCounter end={3} /></div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Featured Projects</div>
+              <div className="text-center group">
+                <div className="text-4xl font-black text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors"><AnimatedCounter end={5} /></div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Featured Projects</div>
               </div>
             </div>
           </div>
@@ -510,10 +571,10 @@ function Hero() {
 // About Section
 function About() {
   const highlights = [
-    { icon: <FaLaptopCode className="w-6 h-6" />, text: 'Full-Stack Development', desc: 'React, Node.js, Next.js' },
-    { icon: <FaRobot className="w-6 h-6" />, text: 'AI & Machine Learning', desc: 'TensorFlow, PyTorch, LLMs' },
-    { icon: <FaCloud className="w-6 h-6" />, text: 'Cloud Architecture', desc: 'AWS, Docker, Kubernetes' },
-    { icon: <FaDatabase className="w-6 h-6" />, text: 'Data Engineering', desc: 'MongoDB, PostgreSQL' },
+    { icon: <FaLaptopCode className="w-6 h-6" />, text: 'Full-Stack Development', desc: 'React, Node.js, Next.js', color: 'from-cyan-500 to-blue-500' },
+    { icon: <FaRobot className="w-6 h-6" />, text: 'AI & Machine Learning', desc: 'TensorFlow, PyTorch, LLMs', color: 'from-purple-500 to-pink-500' },
+    { icon: <FaCloud className="w-6 h-6" />, text: 'Cloud Architecture', desc: 'AWS, Docker, Kubernetes', color: 'from-amber-500 to-orange-500' },
+    { icon: <FaDatabase className="w-6 h-6" />, text: 'Data Engineering', desc: 'MongoDB, PostgreSQL', color: 'from-emerald-500 to-teal-500' },
   ];
 
   const timeline = [
@@ -552,32 +613,38 @@ function About() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-sm font-semibold rounded-full mb-4">
-            About Me
-          </span>
-          <h2 id="about-heading" className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            The Person <span className="text-cyan-500">Behind the Code</span>
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            A passionate developer at the intersection of artificial intelligence and scalable web solutions.
-          </p>
+          <TextReveal>
+            <span className="inline-block px-4 py-1.5 bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-sm font-semibold rounded-full mb-4">
+              About Me
+            </span>
+          </TextReveal>
+          <TextReveal>
+            <h2 id="about-heading" className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-4">
+              The Person <span className="text-cyan-500">Behind the Code</span>
+            </h2>
+          </TextReveal>
+          <TextReveal>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              A passionate developer at the intersection of artificial intelligence and scalable web solutions.
+            </p>
+          </TextReveal>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Column - Bio */}
           <div className="space-y-8">
             <div className="prose prose-lg dark:prose-invert">
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
                 I'm <strong className="text-gray-900 dark:text-white">Shashank Pandya</strong>, a final year B.Tech student at 
                 <span className="text-cyan-600 dark:text-cyan-400 font-semibold"> IIT Kharagpur</span>, specializing in 
                 <span className="text-purple-600 dark:text-purple-400 font-semibold"> Artificial Intelligence</span> and 
                 <span className="text-blue-600 dark:text-blue-400 font-semibold"> Full-Stack Development</span>.
               </p>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
                 My journey in tech began with a fascination for how machines can learn and adapt. Today, I build 
                 AI-powered applications that solve real-world problems, from intelligent chatbots to predictive systems.
               </p>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
                 When I'm not coding, you'll find me exploring new ML papers, contributing to open source, or 
                 mentoring fellow students in their programming journey.
               </p>
@@ -588,36 +655,40 @@ function About() {
               {highlights.map((item, i) => (
                 <div 
                   key={i}
-                  className="group p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                  className="group p-5 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-transparent transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-default"
                 >
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white mb-3 group-hover:scale-110 transition-transform">
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
                     {item.icon}
                   </div>
-                  <h4 className="text-sm font-bold text-gray-900 dark:text-white">{item.text}</h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{item.desc}</p>
+                  <h4 className="text-base font-bold text-gray-900 dark:text-white">{item.text}</h4>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.desc}</p>
                 </div>
               ))}
             </div>
 
             {/* CTA */}
             <div className="flex flex-wrap gap-4">
-              <a
-                href="/CV_Shashank_Pandya.pdf"
-                download="Shashank_Pandya_Resume.pdf"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40"
-              >
-                <FaDownload className="w-5 h-5" />
-                Download CV
-              </a>
-              <a
-                href="https://github.com/shashankpandya"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:border-cyan-500 dark:hover:border-cyan-400 transition-all duration-300"
-              >
-                <FaGithub className="w-5 h-5" />
-                GitHub Profile
-              </a>
+              <MagneticButton>
+                <a
+                  href="/CV_Shashank_Pandya.pdf"
+                  download="Shashank_Pandya_Resume.pdf"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:-translate-y-1"
+                >
+                  <FaDownload className="w-5 h-5" />
+                  Download CV
+                </a>
+              </MagneticButton>
+              <MagneticButton>
+                <a
+                  href="https://github.com/shashankpandya"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:border-cyan-500 dark:hover:border-cyan-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-1"
+                >
+                  <FaGithub className="w-5 h-5" />
+                  GitHub Profile
+                </a>
+              </MagneticButton>
             </div>
           </div>
 
@@ -629,17 +700,17 @@ function About() {
             {/* Timeline Items */}
             <div className="space-y-8">
               {timeline.map((item, i) => (
-                <div key={i} className="relative pl-20">
+                <div key={i} className="relative pl-20 group">
                   {/* Icon */}
-                  <div className="absolute left-4 w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white shadow-lg">
+                  <div className="absolute left-4 w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                     {item.icon}
                   </div>
                   
                   {/* Content */}
-                  <div className="p-6 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-cyan-200 dark:hover:border-cyan-700 transition-colors">
-                    <span className="text-xs font-semibold text-cyan-500 uppercase tracking-wider">{item.year}</span>
+                  <div className="p-6 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-cyan-200 dark:hover:border-cyan-700 hover:shadow-xl transition-all duration-300 group-hover:-translate-x-1">
+                    <span className="text-xs font-bold text-cyan-500 uppercase tracking-wider">{item.year}</span>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mt-1">{item.title}</h3>
-                    <p className="text-sm text-cyan-600 dark:text-cyan-400 font-medium">{item.subtitle}</p>
+                    <p className="text-sm text-cyan-600 dark:text-cyan-400 font-medium mt-1">{item.subtitle}</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{item.description}</p>
                   </div>
                 </div>
@@ -652,7 +723,7 @@ function About() {
   );
 }
 
-// Projects Section with Real Projects
+// Projects Section with Real Projects and Images
 function Projects() {
   const projects = [
     {
@@ -672,6 +743,7 @@ function Projects() {
       demo: 'https://github.com/shashankpandya/Aira',
       featured: true,
       gradient: 'from-purple-600 via-pink-500 to-rose-500',
+      image: '/Aira.png',
     },
     {
       title: 'Empathy Engine - Emotion-Aware TTS',
@@ -690,6 +762,7 @@ function Projects() {
       demo: null,
       featured: true,
       gradient: 'from-emerald-500 via-teal-500 to-cyan-500',
+      image: '/Empathy-engine.png',
     },
     {
       title: 'LegalRAG',
@@ -708,6 +781,7 @@ function Projects() {
       demo: null,
       featured: true,
       gradient: 'from-amber-500 via-orange-500 to-red-500',
+      image: '/LegalRAG.png',
     },
     {
       title: 'Crypto Portfolio Tracker',
@@ -726,6 +800,45 @@ function Projects() {
       demo: 'https://cryptofolio-web3.netlify.app/',
       featured: false,
       gradient: 'from-blue-500 via-indigo-500 to-purple-500',
+      image: '/cryptofolio.png',
+    },
+    {
+      title: 'Autonomous AI Browser Agent',
+      tagline: 'AI-powered web automation',
+      category: 'AI/ML',
+      categoryColor: 'from-violet-500 to-purple-500',
+      description: 'An autonomous AI agent that can browse the web, interact with websites, and complete tasks autonomously using advanced AI models.',
+      role: 'Lead Developer',
+      technologies: ['Python', 'LangChain', 'Selenium', 'OpenAI', 'FastAPI'],
+      outcomes: [
+        'Autonomous web browsing',
+        'Task completion AI',
+        'Multi-step automation'
+      ],
+      github: 'https://github.com/shashankpandya',
+      demo: null,
+      featured: false,
+      gradient: 'from-violet-500 via-purple-500 to-fuchsia-500',
+      image: '/Autonomus-AI-Browser-agent.png',
+    },
+    {
+      title: 'BookStore Web Application',
+      tagline: 'Full-featured e-commerce platform',
+      category: 'Full-Stack',
+      categoryColor: 'from-rose-500 to-pink-500',
+      description: 'A complete online bookstore with shopping cart, user authentication, order management, and admin dashboard.',
+      role: 'Full-Stack Developer',
+      technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'JWT'],
+      outcomes: [
+        'User authentication system',
+        'Shopping cart functionality',
+        'Admin dashboard'
+      ],
+      github: 'https://github.com/shashankpandya',
+      demo: null,
+      featured: false,
+      gradient: 'from-rose-500 via-pink-500 to-red-500',
+      image: '/BookStore.png',
     },
   ];
 
@@ -743,15 +856,21 @@ function Projects() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-sm font-semibold rounded-full mb-4">
-            My Work
-          </span>
-          <h2 id="projects-heading" className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Featured <span className="text-purple-500">Projects</span>
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            A selection of my work showcasing skills in AI, full-stack development, and cloud architecture.
-          </p>
+          <TextReveal>
+            <span className="inline-block px-4 py-1.5 bg-purple-100 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-sm font-semibold rounded-full mb-4">
+              My Work
+            </span>
+          </TextReveal>
+          <TextReveal>
+            <h2 id="projects-heading" className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-4">
+              Featured <span className="text-purple-500">Projects</span>
+            </h2>
+          </TextReveal>
+          <TextReveal>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              A selection of my work showcasing skills in AI, full-stack development, and cloud architecture.
+            </p>
+          </TextReveal>
         </div>
 
         {/* Filter Buttons */}
@@ -760,10 +879,10 @@ function Projects() {
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              className={`px-6 py-3 rounded-full text-sm font-bold transition-all duration-300 ${
                 activeFilter === filter
-                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30'
-                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:-translate-y-1'
+                  : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 hover:-translate-y-1'
               }`}
             >
               {filter}
@@ -772,36 +891,39 @@ function Projects() {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
           {filteredProjects.map((project, i) => (
             <ProjectCard 
               key={i} 
               project={project} 
               isExpanded={expandedProject === i}
               onToggle={() => setExpandedProject(expandedProject === i ? null : i)}
+              index={i}
             />
           ))}
         </div>
 
         {/* View More */}
-        <div className="text-center mt-12">
-          <a
-            href="https://github.com/shashankpandya?tab=repositories"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-          >
-            View All Projects on GitHub
-            <FaExternalLinkAlt className="w-4 h-4" />
-          </a>
+        <div className="text-center mt-16">
+          <MagneticButton>
+            <a
+              href="https://github.com/shashankpandya?tab=repositories"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-all duration-300 hover:-translate-y-1 shadow-xl"
+            >
+              View All Projects on GitHub
+              <FaExternalLinkAlt className="w-5 h-5" />
+            </a>
+          </MagneticButton>
         </div>
       </div>
     </Section>
   );
 }
 
-// Project Card Component with Tilt Effect
-function ProjectCard({ project, isExpanded, onToggle }) {
+// Project Card Component with Real Images
+function ProjectCard({ project, isExpanded, onToggle, index }) {
   const { ref, handleMouseMove, handleMouseLeave } = useTilt();
   
   return (
@@ -814,16 +936,32 @@ function ProjectCard({ project, isExpanded, onToggle }) {
       }`}
       style={{ transition: 'transform 0.1s ease-out, box-shadow 0.3s ease' }}
     >
-      {/* Project Header with Gradient */}
-      <div className={`relative h-48 bg-gradient-to-br ${project.gradient} p-8 flex flex-col justify-end`}>
-        <span className="inline-block self-start px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold text-white mb-3">
+      {/* Project Image */}
+      <div className="relative h-56 overflow-hidden">
+        <img 
+          src={project.image} 
+          alt={`${project.title} - ${project.tagline}`}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          loading="lazy"
+        />
+        <div className={`absolute inset-0 bg-gradient-to-t ${project.gradient} opacity-60`} />
+        
+        {/* Category Badge */}
+        <span className="absolute top-4 left-4 px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-xs font-bold text-white">
           {project.category}
         </span>
-        <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-        <p className="text-white/80 text-sm mt-1">{project.tagline}</p>
+        
+        {/* Featured Badge */}
+        {project.featured && (
+          <div className="absolute top-4 right-4">
+            <span className="px-3 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
+              <FaStar className="w-3 h-3" /> Featured
+            </span>
+          </div>
+        )}
         
         {/* Floating Action Buttons */}
-        <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
           {project.github && (
             <a
               href={project.github}
@@ -845,7 +983,7 @@ function ProjectCard({ project, isExpanded, onToggle }) {
               aria-label={`View ${project.title} live demo`}
               onClick={(e) => e.stopPropagation()}
             >
-              <FaExternalLinkAlt className="w-4 h-4" />
+              <FaPlay className="w-4 h-4" />
             </a>
           )}
         </div>
@@ -853,7 +991,12 @@ function ProjectCard({ project, isExpanded, onToggle }) {
 
       {/* Project Content */}
       <div className="p-6 space-y-4">
-        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-cyan-500 transition-colors">{project.title}</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{project.tagline}</p>
+        </div>
+        
+        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed line-clamp-2">
           {project.description}
         </p>
 
@@ -862,16 +1005,16 @@ function ProjectCard({ project, isExpanded, onToggle }) {
           <div className="pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4">
             {/* Role */}
             <div>
-              <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Role</h4>
+              <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Role</h4>
               <p className="text-sm text-gray-700 dark:text-gray-300">{project.role}</p>
             </div>
 
             {/* Technologies */}
             <div>
-              <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Technologies</h4>
+              <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Technologies</h4>
               <div className="flex flex-wrap gap-2">
                 {project.technologies.map((tech, j) => (
-                  <span key={j} className="px-2.5 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-md">
+                  <span key={j} className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-medium rounded-lg">
                     {tech}
                   </span>
                 ))}
@@ -880,7 +1023,7 @@ function ProjectCard({ project, isExpanded, onToggle }) {
 
             {/* Outcomes */}
             <div>
-              <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Key Features</h4>
+              <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Key Features</h4>
               <ul className="space-y-1">
                 {project.outcomes.map((outcome, k) => (
                   <li key={k} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -896,7 +1039,7 @@ function ProjectCard({ project, isExpanded, onToggle }) {
         {/* Expand Button */}
         <button
           onClick={onToggle}
-          className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-3 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
         >
           {isExpanded ? (
             <>Show Less <FaChevronDown className="w-4 h-4 rotate-180" /></>
@@ -905,15 +1048,6 @@ function ProjectCard({ project, isExpanded, onToggle }) {
           )}
         </button>
       </div>
-
-      {/* Featured Badge */}
-      {project.featured && (
-        <div className="absolute top-4 left-4">
-          <span className="px-2.5 py-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center gap-1">
-            <FaStar className="w-3 h-3" /> Featured
-          </span>
-        </div>
-      )}
     </article>
   );
 }
@@ -933,7 +1067,7 @@ function Skills() {
         { name: 'NLP', icon: <FaBrain /> },
         { name: 'LLMs', icon: <SiOpenai /> },
         { name: 'Computer Vision', icon: <FaEye /> },
-        { name: 'LangChain', icon: null },
+        { name: 'LangChain', icon: <FaLayerGroup /> },
       ],
     },
     {
@@ -1006,15 +1140,21 @@ function Skills() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-sm font-semibold rounded-full mb-4">
-            My Expertise
-          </span>
-          <h2 id="skills-heading" className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Skills & <span className="text-cyan-500">Technologies</span>
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            A comprehensive toolkit built through hands-on experience with modern technologies.
-          </p>
+          <TextReveal>
+            <span className="inline-block px-4 py-1.5 bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-sm font-semibold rounded-full mb-4">
+              My Expertise
+            </span>
+          </TextReveal>
+          <TextReveal>
+            <h2 id="skills-heading" className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-4">
+              Skills & <span className="text-cyan-500">Technologies</span>
+            </h2>
+          </TextReveal>
+          <TextReveal>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              A comprehensive toolkit built through hands-on experience with modern technologies.
+            </p>
+          </TextReveal>
         </div>
 
         {/* Skills Grid */}
@@ -1022,11 +1162,11 @@ function Skills() {
           {skillCategories.map((category, i) => (
             <div
               key={i}
-              className="group p-6 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+              className="group p-6 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-default"
             >
               {/* Category Header */}
               <div className="flex items-center gap-4 mb-5">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                   {category.icon}
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">{category.name}</h3>
@@ -1037,11 +1177,11 @@ function Skills() {
                 {category.skills.map((skill, j) => (
                   <div
                     key={j}
-                    className="group/skill relative flex flex-col items-center gap-1.5 p-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-200 cursor-default"
+                    className="group/skill relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-200 cursor-default hover:shadow-lg"
                     title={skill.name}
                   >
                     {skill.icon ? (
-                      <span className="text-xl text-gray-600 dark:text-gray-400 group-hover/skill:text-cyan-500 transition-colors">
+                      <span className="text-xl text-gray-600 dark:text-gray-400 group-hover/skill:text-cyan-500 group-hover/skill:scale-110 transition-all duration-200">
                         {skill.icon}
                       </span>
                     ) : (
@@ -1058,19 +1198,21 @@ function Skills() {
         </div>
 
         {/* Certifications */}
-        <div className="mt-16 text-center">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-8">Certifications & Achievements</h3>
+        <div className="mt-20 text-center">
+          <TextReveal>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Certifications & Achievements</h3>
+          </TextReveal>
           <div className="flex flex-wrap justify-center gap-6">
             {[
-              { name: 'AWS Cloud Practitioner', provider: 'Amazon Web Services', icon: <SiAmazonaws className="text-2xl" /> },
-              { name: 'Machine Learning Specialization', provider: 'DeepLearning.AI', icon: <FaBrain className="text-2xl" /> },
-              { name: 'TensorFlow Developer', provider: 'Google', icon: <SiTensorflow className="text-2xl" /> },
+              { name: 'AWS Cloud Practitioner', provider: 'Amazon Web Services', icon: <SiAmazonaws className="text-3xl" />, color: 'from-amber-500 to-orange-500' },
+              { name: 'Machine Learning Specialization', provider: 'DeepLearning.AI', icon: <FaBrain className="text-3xl" />, color: 'from-purple-500 to-pink-500' },
+              { name: 'TensorFlow Developer', provider: 'Google', icon: <SiTensorflow className="text-3xl" />, color: 'from-cyan-500 to-blue-500' },
             ].map((cert, i) => (
               <div
                 key={i}
-                className="flex items-center gap-4 px-6 py-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-500/10 dark:to-orange-500/10 rounded-2xl border border-amber-200 dark:border-amber-500/20 hover:shadow-lg transition-shadow"
+                className="flex items-center gap-4 px-8 py-5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl border border-gray-200 dark:border-gray-700 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-default"
               >
-                <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center text-white">
+                <div className={`w-16 h-16 bg-gradient-to-br ${cert.color} rounded-xl flex items-center justify-center text-white shadow-lg`}>
                   {cert.icon}
                 </div>
                 <div className="text-left">
@@ -1155,42 +1297,49 @@ function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 text-sm font-semibold rounded-full mb-4">
-            Get In Touch
-          </span>
-          <h2 id="contact-heading" className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Let's <span className="text-green-500">Connect</span>
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Have a project in mind, want to collaborate, or just want to say hello? I'd love to hear from you.
-          </p>
+          <TextReveal>
+            <span className="inline-block px-4 py-1.5 bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 text-sm font-semibold rounded-full mb-4">
+              Get In Touch
+            </span>
+          </TextReveal>
+          <TextReveal>
+            <h2 id="contact-heading" className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white mb-4">
+              Let's <span className="text-green-500">Connect</span>
+            </h2>
+          </TextReveal>
+          <TextReveal>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Have a project in mind, want to collaborate, or just want to say hello? I'd love to hear from you.
+            </p>
+          </TextReveal>
         </div>
 
         <div className="grid lg:grid-cols-5 gap-12">
           {/* Contact Info */}
           <div className="lg:col-span-2 space-y-4">
             {contactInfo.map((item, i) => (
-              <a
-                key={i}
-                href={item.href}
-                target={item.href?.startsWith('http') ? '_blank' : undefined}
-                rel={item.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className={`flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all duration-300 ${
-                  item.href 
-                    ? 'hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg hover:-translate-x-1 group' 
-                    : ''
-                }`}
-              >
-                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shadow-lg`}>
-                  {item.icon}
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{item.label}</p>
-                  <p className={`font-medium text-gray-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors ${!item.href ? 'cursor-default' : ''}`}>
-                    {item.value}
-                  </p>
-                </div>
-              </a>
+              <MagneticButton key={i}>
+                <a
+                  href={item.href}
+                  target={item.href?.startsWith('http') ? '_blank' : undefined}
+                  rel={item.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  className={`flex items-center gap-4 p-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 transition-all duration-300 ${
+                    item.href 
+                      ? 'hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-xl hover:-translate-x-2 group' 
+                      : ''
+                  }`}
+                >
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    {item.icon}
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.label}</p>
+                    <p className={`font-semibold text-gray-900 dark:text-white group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors ${!item.href ? 'cursor-default' : ''}`}>
+                      {item.value}
+                    </p>
+                  </div>
+                </a>
+              </MagneticButton>
             ))}
 
             {/* Availability Note */}
@@ -1200,7 +1349,7 @@ function Contact() {
                   <span className="w-3 h-3 bg-green-500 rounded-full" />
                   <span className="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping opacity-75" />
                 </div>
-                <span className="font-semibold text-green-700 dark:text-green-400">Currently Available</span>
+                <span className="font-bold text-green-700 dark:text-green-400">Currently Available</span>
               </div>
               <p className="text-sm text-green-600 dark:text-green-500">
                 I'm open to new opportunities, internships, and collaborations. Response within 24 hours.
@@ -1212,8 +1361,8 @@ function Contact() {
           <div className="lg:col-span-3 p-8 rounded-3xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl">
             {submitted ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-12">
-                <div className="w-20 h-20 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center mb-6 animate-scale-in">
-                  <FaCheck className="w-10 h-10 text-green-500" />
+                <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center mb-6 animate-bounce-in">
+                  <FaCheck className="w-12 h-12 text-green-500" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Message Sent!</h3>
                 <p className="text-gray-600 dark:text-gray-400">Thank you for reaching out. I'll get back to you soon.</p>
@@ -1222,7 +1371,7 @@ function Contact() {
               <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="name" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                       Name <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -1232,7 +1381,7 @@ function Contact() {
                       onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                       placeholder="Your name"
                       required
-                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border ${
+                      className={`w-full px-4 py-3.5 rounded-xl bg-gray-50 dark:bg-gray-800 border ${
                         errors.name ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'
                       } text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all`}
                       aria-describedby={errors.name ? 'name-error' : undefined}
@@ -1240,7 +1389,7 @@ function Contact() {
                     {errors.name && <p id="name-error" className="mt-1 text-sm text-red-500">{errors.name}</p>}
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="email" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                       Email <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -1250,7 +1399,7 @@ function Contact() {
                       onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                       placeholder="your@email.com"
                       required
-                      className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border ${
+                      className={`w-full px-4 py-3.5 rounded-xl bg-gray-50 dark:bg-gray-800 border ${
                         errors.email ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'
                       } text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all`}
                       aria-describedby={errors.email ? 'email-error' : undefined}
@@ -1260,7 +1409,7 @@ function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="subject" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     Subject
                   </label>
                   <input
@@ -1269,12 +1418,12 @@ function Contact() {
                     value={formState.subject}
                     onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
                     placeholder="What's this about?"
-                    className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all"
+                    className="w-full px-4 py-3.5 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label htmlFor="message" className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                     Message <span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -1284,7 +1433,7 @@ function Contact() {
                     placeholder="Tell me about your project, idea, or just say hello..."
                     rows={6}
                     required
-                    className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border ${
+                    className={`w-full px-4 py-3.5 rounded-xl bg-gray-50 dark:bg-gray-800 border ${
                       errors.message ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'
                     } text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all resize-none`}
                     aria-describedby={errors.message ? 'message-error' : undefined}
@@ -1292,23 +1441,25 @@ function Contact() {
                   {errors.message && <p id="message-error" className="mt-1 text-sm text-red-500">{errors.message}</p>}
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      Send Message
-                      <FaArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
+                <MagneticButton>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-4 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Send Message
+                        <FaArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                </MagneticButton>
               </form>
             )}
           </div>
@@ -1344,14 +1495,14 @@ function Footer() {
           </div>
 
           {/* Social Links */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {socialLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-cyan-100 dark:hover:bg-cyan-500/20 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                className="w-11 h-11 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-cyan-100 dark:hover:bg-cyan-500/20 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-300 hover:-translate-y-1"
                 aria-label={link.name}
               >
                 {link.icon}
@@ -1388,13 +1539,15 @@ function BackToTop() {
   if (!isVisible) return null;
 
   return (
-    <button
-      onClick={scrollToTop}
-      className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg flex items-center justify-center hover:scale-110 transition-all z-40 animate-fade-in-up"
-      aria-label="Back to top"
-    >
-      <FaArrowUp className="w-5 h-5" />
-    </button>
+    <MagneticButton>
+      <button
+        onClick={scrollToTop}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-xl flex items-center justify-center hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 z-40"
+        aria-label="Back to top"
+      >
+        <FaArrowUp className="w-6 h-6" />
+      </button>
+    </MagneticButton>
   );
 }
 
@@ -1406,10 +1559,10 @@ function AccessibilityStatement() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 w-12 h-12 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-lg flex items-center justify-center hover:scale-110 transition-transform z-40"
+        className="fixed bottom-6 left-6 w-14 h-14 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-xl flex items-center justify-center hover:-translate-y-1 transition-all duration-300 z-40"
         aria-label="View accessibility information"
       >
-        <FaUniversalAccess className="w-5 h-5" />
+        <FaUniversalAccess className="w-6 h-6" />
       </button>
 
       {isOpen && (
@@ -1421,10 +1574,10 @@ function AccessibilityStatement() {
           aria-labelledby="accessibility-title"
         >
           <div 
-            className="bg-white dark:bg-gray-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-scale-in"
+            className="bg-white dark:bg-gray-900 rounded-2xl max-w-lg w-full p-8 shadow-2xl animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 id="accessibility-title" className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 id="accessibility-title" className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
               Accessibility Features
             </h2>
             <div className="space-y-4 text-gray-600 dark:text-gray-400">
@@ -1443,7 +1596,7 @@ function AccessibilityStatement() {
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="mt-6 w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+              className="mt-6 w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
             >
               Close
             </button>
