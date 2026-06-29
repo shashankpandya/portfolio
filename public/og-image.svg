@@ -1,54 +1,71 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#030712"/>
       <stop offset="50%" style="stop-color:#0f172a"/>
-      <stop offset="100%" style="stop-color:#1e1b4b"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
     </linearGradient>
-    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#06b6d4"/>
       <stop offset="50%" style="stop-color:#3b82f6"/>
       <stop offset="100%" style="stop-color:#8b5cf6"/>
     </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
   </defs>
   
   <!-- Background -->
-  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.5"/>
   
-  <!-- Grid Pattern -->
-  <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-    <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#06b6d4" stroke-width="0.5" opacity="0.1"/>
-  </pattern>
-  <rect width="1200" height="630" fill="url(#grid)"/>
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="200" fill="#06b6d4" opacity="0.1"/>
+  <circle cx="1100" cy="530" r="250" fill="#8b5cf6" opacity="0.1"/>
+  <circle cx="600" cy="315" r="350" fill="#3b82f6" opacity="0.05"/>
   
-  <!-- Decorative Orbs -->
-  <circle cx="200" cy="150" r="200" fill="#06b6d4" opacity="0.1"/>
-  <circle cx="1000" cy="480" r="250" fill="#8b5cf6" opacity="0.1"/>
-  <circle cx="600" cy="315" r="300" fill="#3b82f6" opacity="0.05"/>
+  <!-- Main content area -->
+  <g transform="translate(600, 315)">
+    <!-- Avatar placeholder with gradient border -->
+    <circle cx="0" cy="-80" r="70" fill="none" stroke="url(#accentGradient)" stroke-width="4" filter="url(#glow)"/>
+    <circle cx="0" cy="-80" r="65" fill="#1e293b"/>
+    <text x="0" y="-70" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="white" text-anchor="middle">SP</text>
+    
+    <!-- Name -->
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="white" text-anchor="middle">Shashank Pandya</text>
+    
+    <!-- Title with gradient -->
+    <text x="0" y="70" font-family="Arial, sans-serif" font-size="28" font-weight="normal" fill="url(#accentGradient)" text-anchor="middle">Full-Stack Developer &amp; AI/ML Engineer</text>
+    
+    <!-- Location -->
+    <text x="0" y="110" font-family="Arial, sans-serif" font-size="20" fill="#94a3b8" text-anchor="middle">IIT Kharagpur</text>
+  </g>
   
-  <!-- Name -->
-  <text x="600" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" fill="white" text-anchor="middle">
-    SHASHANK PANDYA
-  </text>
+  <!-- Bottom badges -->
+  <g transform="translate(300, 550)">
+    <rect x="0" y="0" width="140" height="36" rx="18" fill="#06b6d4" opacity="0.2"/>
+    <text x="70" y="24" font-family="Arial, sans-serif" font-size="14" fill="#06b6d4" text-anchor="middle">React • Python</text>
+  </g>
   
-  <!-- Title -->
-  <text x="600" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="32" fill="url(#textGrad)" text-anchor="middle">
-    Full-Stack Developer &amp; AI Engineer
-  </text>
+  <g transform="translate(470, 550)">
+    <rect x="0" y="0" width="140" height="36" rx="18" fill="#8b5cf6" opacity="0.2"/>
+    <text x="70" y="24" font-family="Arial, sans-serif" font-size="14" fill="#8b5cf6" text-anchor="middle">TensorFlow • ML</text>
+  </g>
   
-  <!-- Institution -->
-  <text x="600" y="400" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#94a3b8" text-anchor="middle">
-    Indian Institute of Technology Kharagpur
-  </text>
+  <g transform="translate(640, 550)">
+    <rect x="0" y="0" width="140" height="36" rx="18" fill="#3b82f6" opacity="0.2"/>
+    <text x="70" y="24" font-family="Arial, sans-serif" font-size="14" fill="#3b82f6" text-anchor="middle">AWS • Docker</text>
+  </g>
   
-  <!-- Tech Stack -->
-  <text x="600" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#64748b" text-anchor="middle">
-    React • Python • AWS Lambda • Generative AI • Machine Learning
-  </text>
-  
-  <!-- Bottom Bar -->
-  <rect x="0" y="580" width="1200" height="50" fill="#06b6d4" opacity="0.2"/>
-  <text x="600" y="615" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#06b6d4" text-anchor="middle">
-    portfolio-shashankpandya.vercel.app
-  </text>
+  <g transform="translate(810, 550)">
+    <rect x="0" y="0" width="140" height="36" rx="18" fill="#22c55e" opacity="0.2"/>
+    <text x="70" y="24" font-family="Arial, sans-serif" font-size="14" fill="#22c55e" text-anchor="middle">Available</text>
+  </g>
 </svg>
