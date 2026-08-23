@@ -2,10 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
-/* Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -19,44 +17,31 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #f7f4ee;
+  color: #171c26;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Light mode (default) */
-body {
-  background-color: #ffffff;
-  color: #111827;
+.dark body {
+  background-color: #11151c;
+  color: #f2efe9;
 }
 
-/* Dark mode */
-.dark body,
-:root.dark body {
-  background-color: #030712;
-  color: #f9fafb;
-}
-
-/* Code/Mono Font */
-.font-mono {
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
-}
-
-/* Selection */
 ::selection {
-  background: rgba(6, 182, 212, 0.3);
-  color: #0891b2;
+  background: rgba(223, 117, 58, 0.25);
+  color: #171c26;
 }
 
 .dark ::selection {
-  background: rgba(6, 182, 212, 0.4);
-  color: #22d3ee;
+  background: rgba(155, 135, 245, 0.3);
+  color: #f2efe9;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -64,172 +49,55 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #06b6d4, #8b5cf6);
-  border-radius: 4px;
+  background: #df753a;
+  border-radius: 6px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #22d3ee, #a78bfa);
-}
-
-/* Focus Styles */
 *:focus-visible {
-  outline: 2px solid #06b6d4;
+  outline: 2px solid #df753a;
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
-/* Smooth Animations */
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* Hand-marked highlighter strokes, used instead of boxed badges/pills to
+   pick out the three disciplines wherever they show up in running text.
+   background-position: 0 100% bottom-aligns the (shorter) gradient tile
+   to the text's baseline, so it sits under the letters like a real
+   highlighter instead of cutting across their middle. */
+.mark {
+  padding: 0 0.15em;
+  margin: 0 -0.15em;
+  background-repeat: no-repeat;
+  background-size: 100% 42%;
+  background-position: 0 100%;
+  border-radius: 1px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.mark-software { background-image: linear-gradient(120deg, rgba(47, 174, 130, 0.38), rgba(47, 174, 130, 0.38)); }
+.mark-chain { background-image: linear-gradient(120deg, rgba(217, 164, 65, 0.38), rgba(217, 164, 65, 0.38)); }
+.mark-ai { background-image: linear-gradient(120deg, rgba(155, 135, 245, 0.38), rgba(155, 135, 245, 0.38)); }
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-8px); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.6); }
+/* Scroll-reveal utility, toggled by IntersectionObserver in JS.
+   Content stays fully readable (opacity: 1) even if the observer never
+   fires — only the slide-up motion is gated, never legibility. */
+.reveal {
+  opacity: 1;
+  transform: translateY(16px);
+  transition: transform 0.6s ease;
+}
+.reveal.is-visible {
+  transform: translateY(0);
 }
 
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes glow-pulse {
-  0%, 100% { 
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3),
-                0 0 40px rgba(6, 182, 212, 0.1);
-  }
-  50% { 
-    box-shadow: 0 0 30px rgba(6, 182, 212, 0.5),
-                0 0 60px rgba(6, 182, 212, 0.2);
-  }
-}
-
-@keyframes border-glow {
-  0%, 100% { border-color: rgba(6, 182, 212, 0.3); }
-  50% { border-color: rgba(6, 182, 212, 0.8); }
-}
-
-.animate-float { animation: float 6s ease-in-out infinite; }
-.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-.animate-gradient { background-size: 200% 200%; animation: gradient-shift 8s ease infinite; }
-.animate-bounce-slow { animation: bounce 2s ease-in-out infinite; }
-.animate-shimmer { 
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-.animate-spin-slow { animation: spin-slow 20s linear infinite; }
-.animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
-.animate-slide-in-right { animation: slide-in-right 0.5s ease-out forwards; }
-.animate-scale-in { animation: scale-in 0.3s ease-out forwards; }
-.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
-.animate-border-glow { animation: border-glow 2s ease-in-out infinite; }
-
-/* Glass Effect */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.glass-dark {
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Gradient Text */
-.gradient-text {
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Gradient Border */
-.gradient-border {
-  position: relative;
-  background: linear-gradient(#ffffff, #ffffff) padding-box,
-              linear-gradient(135deg, #06b6d4, #8b5cf6) border-box;
-  border: 2px solid transparent;
-}
-
-.dark .gradient-border {
-  background: linear-gradient(#1f2937, #1f2937) padding-box,
-              linear-gradient(135deg, #06b6d4, #8b5cf6) border-box;
-}
-
-/* Skip Link */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: #06b6d4;
-  color: #000;
-  padding: 8px 16px;
-  z-index: 100;
-  transition: top 0.3s;
-}
-
-.skip-link:focus { top: 0; }
-
-/* Canvas Container */
-.canvas-container { position: absolute; inset: 0; z-index: 0; }
-
-/* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -239,137 +107,30 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  .reveal {
+    transform: none;
+  }
 }
 
-/* Print Styles */
 @media print {
-  body { 
-    background: white !important; 
+  body {
+    background: white !important;
     color: black !important;
   }
-  nav, footer, .no-print { 
-    display: none !important; 
+  nav, footer, .no-print {
+    display: none !important;
   }
 }
 
-/* Responsive Typography */
-@media (max-width: 640px) { 
-  html { font-size: 14px; } 
-}
-
-/* Custom Tailwind Utilities */
-@layer utilities {
-  /* Text balance for better readability */
-  .text-balance {
-    text-wrap: balance;
-  }
-  
-  /* Hide scrollbar but keep functionality */
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Gradient mask for fade effects */
-  .gradient-mask-t {
-    mask-image: linear-gradient(to top, black 70%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to top, black 70%, transparent 100%);
-  }
-  
-  .gradient-mask-b {
-    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-  }
-}
-
-/* Smooth scroll behavior with fallback */
-@supports not (scroll-behavior: smooth) {
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-/* Dark mode specific overrides */
-.dark {
-  color-scheme: dark;
-}
-
-/* Ensure proper contrast in dark mode */
-.dark input,
-.dark textarea,
-.dark select {
-  color: #f9fafb;
-}
-
-/* Placeholder color for dark mode */
-.dark ::placeholder {
-  color: #6b7280;
-  opacity: 1;
-}
-
-/* Focus ring for accessibility */
-.focus-ring:focus {
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.5);
-}
-
-/* Loading skeleton animation */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(156, 163, 175, 0.1) 25%,
-    rgba(156, 163, 175, 0.2) 50%,
-    rgba(156, 163, 175, 0.1) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.dark .skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(75, 85, 99, 0.2) 25%,
-    rgba(75, 85, 99, 0.3) 50%,
-    rgba(75, 85, 99, 0.2) 75%
-  );
-  background-size: 200% 100%;
-}
-
-/* Custom cursor for interactive elements */
-a, button, [role="button"] {
-  cursor: pointer;
-}
-
-/* Ensure images are responsive */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* Link styles */
 a {
   text-decoration: none;
-  transition: color 0.2s ease;
 }
 
-/* Table styles for responsiveness */
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-/* List styles */
 ul, ol {
   list-style: none;
-}
-
-/* Image lazy loading placeholder */
-img[loading="lazy"] {
-  background-color: #e5e7eb;
-}
-
-.dark img[loading="lazy"] {
-  background-color: #374151;
 }
